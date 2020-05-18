@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var gameBoard [3][3]string
 var winConditions = [2]string{"xxx", "ooo"}
@@ -11,6 +13,7 @@ func viewBoard(b [3][3]string) {
 	}
 }
 
+// add feature to prevent an 'x' or 'o' value from being overwritten
 func fillPosition(user string, position uint) {
 	u := user
 	b := gameBoard[:]
@@ -41,48 +44,66 @@ func fillPosition(user string, position uint) {
 }
 
 //// Check board conditions
-// TODO: Fix return
-func checkRows(b [3][3]string) string {
+func checkRows(b [3][3]string) bool {
+	var rowWin bool
 	for i := range b {
 		rowResult := fmt.Sprintf("%v%v%v", b[i], b[i+1], b[i+2])
 		if rowResult == winConditions[0] || rowResult == winConditions[1] {
-			return "win"
+			rowWin := true
+			break
 		}
 	}
+
+	return rowWin
 }
 
-// TODO: Fix return
-func checkColumns(b [3][3]string) string {
+func checkColumns(b [3][3]string) bool {
+	var columnWin bool
 	for i := range b {
 		columnResult := fmt.Sprintf("%v%v%v", b[0][i], b[1][i], b[2][i])
 		if columnResult == winConditions[0] || columnResult == winConditions[1] {
-			return "win"
+			columnWin := true
+			break
 		}
 	}
+
+	return columnWin
 }
 
-// fix return
-func checkDiagonal(b [3][3]string) string {
+func checkDiagonals(b [3][3]string) bool {
 	i, j, k := 0, 1, 2
 
 	diagonalRight := fmt.Sprintf("%v%v%v", b[0][i], b[j][j], b[2][k])
 	diagonalLeft := fmt.Sprintf("%v%v%v", b[0][k], b[j][j], b[2][i])
 	allDiagonalResults := [2]string{diagonalLeft, diagonalRight}
+	var diagonalWin bool
 
 	for l := range allDiagonalResults {
 		for m := range winConditions {
-			if allDiagonalResults[i] == winConditions[m] {
-				return "win"
+			if allDiagonalResults[l] == winConditions[m] {
+				diagonalWin := true
+				break
 			}
 		}
 	}
-}
-
-func gameProgress(b [3][3]string) string {
-	// 3 across, 3 down, 3 diagonal
-
+	return diagonalWin
 }
 
 func main() {
+	//flag for who is x and who is o
+
+	fmt.Printf("Player 1 should select 'x' or 'o'\n")
+	var player1 string
+	fmt.Scanln(&player1)
+
+	var player2 string
+	switch player1 {
+	case "x":
+		player2 = "o"
+	case "o":
+		player2 = "x"
+	}
+
+	fmt.Println("Player 2 is %v", player2)
 	viewBoard(gameBoard)
 }
